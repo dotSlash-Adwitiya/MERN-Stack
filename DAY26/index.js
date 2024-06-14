@@ -4,7 +4,7 @@ const app = express();
 
 app.use(express.json());
 
-const user = [
+const users = [
   {
     name: "Jhon Doe",
     kidneys: [
@@ -48,18 +48,32 @@ const user = [
 ];
 
 app.get("/getKidneyHealth", function (req, res) {
-  const jhonKidneys = user[0].kidneys;
-  const noOfKidneys = jhonKidneys.length;
-  
-  let noOfHealthyKidneys = 0;
-  for (let i = 0; i < jhonKidneys.length; i++) {
-    if (jhonKidneys[i].healthy) {
-      noOfHealthyKidneys = noOfHealthyKidneys + 1;
+  const kidneyHealthReport = [];
+
+  for (let i = 0; i < users.length; i++) {
+    const user = users[i];
+    const noOfKidneys = user.kidneys.length;
+    let noOfHealthyKidneys = 0;
+
+    for (let j = 0; j < user.kidneys.length; j++) {
+      if (user.kidneys[j].healthy) {
+        noOfHealthyKidneys++;
+      }
     }
+
+    const noOfUnHealthyKidneys = noOfKidneys - noOfHealthyKidneys;
+
+    kidneyHealthReport.push({
+      name: user.name,
+      noOfKidneys,
+      noOfHealthyKidneys,
+      noOfUnHealthyKidneys,
+    });
   }
-  const noOfUnHealthyKidneys = noOfKidneys - noOfHealthyKidneys;
-  res.json({ noOfKidneys, noOfHealthyKidneys, noOfUnHealthyKidneys });
-  console.log(jhonKidneys);
+
+  res.json(kidneyHealthReport);
 });
 
-app.listen(3000);
+app.listen(3000, () => {
+  console.log("Server is running on port 3000");
+});
