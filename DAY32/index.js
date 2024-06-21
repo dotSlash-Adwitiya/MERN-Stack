@@ -1,3 +1,5 @@
+const express = require("express");
+
 const app = express();
 
 // * DEFINING CUSTOM Middlewares
@@ -36,3 +38,19 @@ app.get("/heart-checkup", userMiddleware, function (req, res) {
 });
 
 // * Function chaining in a single route :
+app.get(
+  "/function-chain",
+  function (req, res, next) {
+    console.log("Request - 1");
+    next();
+  },
+  function (req, res, next) {
+    console.log("Request - 2");
+    next();
+  },
+  function (req, res, next) {
+    console.log("Request - 3");
+  }
+);
+
+app.listen(3000);
