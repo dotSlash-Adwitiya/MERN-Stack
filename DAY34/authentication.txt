@@ -1,0 +1,5 @@
+Slightly better way:
+
+1. Give the user a token during signup/login
+2. Ask the user this token in all subsequent requests
+3. When the user logsout, ask the user to forget the token
