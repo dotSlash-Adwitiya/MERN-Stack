@@ -1,4 +1,3 @@
-// * Basic Authentication using JWT
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const jwtPassword = "123456";
@@ -25,14 +24,17 @@ const ALL_USERS = [
 ];
 
 function userExists(username, password) {
-  const userExists = false;
+  let userExists = false;
   for (let i = 0; i < ALL_USERS.length; i++) {
     if (
-      ALL_USERS[i].username === username &&
-      ALL_USERS[i].password === password
+      ALL_USERS[i].username == username &&
+      ALL_USERS[i].password == password
     ) {
       userExists = true;
+      console.log("Called True");
     }
+    console.log(username, password);
+    console.log("Called");
   }
   return userExists;
 }
@@ -47,7 +49,7 @@ app.post("/signin", function (req, res) {
     });
   }
 
-  var token = jwt.sign({ username: username }, "shhhhh");
+  var token = jwt.sign({ username: username }, jwtPassword);
   return res.json({
     token,
   });
@@ -55,10 +57,16 @@ app.post("/signin", function (req, res) {
 
 app.get("/users", function (req, res) {
   const token = req.headers.authorization;
+  // console.log(token);
   try {
     const decoded = jwt.verify(token, jwtPassword);
     const username = decoded.username;
-    // return a list of users other than this username
+    return res.json({
+      users: ALL_USERS.filter(function (value) {
+        if (value.username == username) return false;
+        else return true;
+      }),
+    });
   } catch (err) {
     return res.status(403).json({
       msg: "Invalid token",
@@ -66,4 +74,6 @@ app.get("/users", function (req, res) {
   }
 });
 
-app.listen(3000);
+app.listen(3000, () => {
+  console.log("Server Running");
+});
